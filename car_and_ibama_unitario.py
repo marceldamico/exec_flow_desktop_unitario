@@ -4,7 +4,6 @@ from tkinter import *
 
 class RequisicoesFunctions:
     def __init__(self):
-        self.IAMKEY = 'BEF3CAD78C638977BA4813F17CB7885CBC690E108F022A5998480DAC2DC2EB82'
         self.url_car = 'https://car.atfunctions.com/api/car/get_by_id/{codigo}/?IAMKEY=sua_chave_aqui'
         self.url_ibama = 'https://ibama.atfunctions.com/api/ibama/get_by_polygon/?IAMKEY=sua_chave_aqui' 
         
@@ -36,21 +35,21 @@ class RequisicoesFunctions:
         except Exception as e:
             return "ERRO: {}".format(e)   
 
-    def gera_url_car_get_by_id(self, id):
+    def gera_url_car_get_by_id(self, IAMKEY, id):
         url = self.url_car
-        url = url.replace("sua_chave_aqui",self.IAMKEY)
+        url = url.replace("sua_chave_aqui",IAMKEY)
         valor_para_replace = "{codigo}"
         url = url.replace(valor_para_replace, id)
         return url
 
-    def gera_url_ibama_get_by_polygon(self):
+    def gera_url_ibama_get_by_polygon(self, IAMKEY):
         url = self.url_ibama
-        url = url.replace("sua_chave_aqui",self.IAMKEY)
+        url = url.replace("sua_chave_aqui",IAMKEY)
         return url        
 
-    def gera_url_ibama_get_by_point(self, longitude, latitude, consult_date):
+    def gera_url_ibama_get_by_point(self,IAMKEY, longitude, latitude, consult_date):
         url = self.url_ibama
-        url = url.replace("sua_chave_aqui",self.IAMKEY)
+        url = url.replace("sua_chave_aqui",IAMKEY)
         longitude_to_replace = "{longitude}"
         url = url.replace(longitude_to_replace, str(longitude))
         latitude_to_replace = "{latitude}"
@@ -72,15 +71,16 @@ def analise():
     frame2.update()     
     r = RequisicoesFunctions()
     id = e1.get()
-    consult_date = e1.get()
+    consult_date = e2.get()
+    IAMKEY = e3.get()
     mytext.insert('end', str("Iniciando a consulta ao CAR") + '\n')
     frame2.update()  
-    url_car = r.gera_url_car_get_by_id(id)
+    url_car = r.gera_url_car_get_by_id(IAMKEY, id)
     response_car = r.executa_get(url_car)
     mytext.insert('end', str("Concluída a consulta ao CAR") + '\n')
     frame2.update()     
     wkt = response_car['objectResult']['geom']
-    url_ibama = r.gera_url_ibama_get_by_polygon()
+    url_ibama = r.gera_url_ibama_get_by_polygon(IAMKEY)
     epsg = 4326
     mytext.insert('end', str("Iniciada a consulta aos dados de Embargo do IBAMA") + '\n')
     frame2.update()    
@@ -193,6 +193,10 @@ Label(frame1, text="Data a analisar").grid(row=1)
 e2 = Entry(frame1)
 e2.grid(row=1, column=1)
 
+Label(frame1, text="IAMKEY").grid(row=2) 
+e3 = Entry(frame1)
+e3.grid(row=2, column=1)
+
 Button(frame1, text='Processar', command=analise).grid(row=3, column=1, sticky=W, pady=4) 
 
 # mytext=Text(frame2).pack()
@@ -202,6 +206,7 @@ mytext.pack(padx=10, pady=10, ipadx=10, ipady=10)
 root.mainloop()
 
 # if __name__=="__main__":
+#     IAMKEY = 'BEF3CAD78C638977BA4813F17CB7885CBC690E108F022A5998480DAC2DC2EB82'
 #     id = "RR-1400233-FE38F60765D149AD98FDA9EBD30ADC71"
 #     consult_date = '2021-06-22'
 #     analise(id, consult_date)
