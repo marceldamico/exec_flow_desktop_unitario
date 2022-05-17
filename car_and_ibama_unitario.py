@@ -67,6 +67,7 @@ class RequisicoesFunctions:
 
 # def analise(id, consult_date):
 def analise():
+    mytext.delete('1.0', END)
     mytext.insert('end', str("Iniciando o processamento") + '\n')
     frame2.update()     
     r = RequisicoesFunctions()
@@ -171,6 +172,8 @@ def analise():
                 item_embargo+=1
 
         registro+=1
+    mytext.insert('end', str("Processamento Concluído") + '\n')
+    frame2.update() 
  
 #Criando uma interface
 root = Tk()
